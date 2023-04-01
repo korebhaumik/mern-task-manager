@@ -61,21 +61,18 @@ userSchema.pre("save", async function (next) {
 //Verifying Password
 userSchema.method(
   "comparePasswords",
-  async function (
-    inputEmail: string,
-    inputPassword: string
-  ): Promise<userType> {
+  async function ( inputEmail: string, inputPassword: string ): Promise<userType> {
     const user: userType | null = await User.findOne({ email: inputEmail });
     // console.log(user);
     if (user) {
       const auth: boolean = await bcrypt.compare(inputPassword, user.password);
       if (!auth) {
-        throw Error("Your password is incorrect !!");
+        throw new Error("Your password is incorrect");
       } else {
         return user;
       }
     }
-    throw new Error("Your email is not registered !!");
+    throw {type: "email", message:"Your email is not registered !!"};
   }
 );
 

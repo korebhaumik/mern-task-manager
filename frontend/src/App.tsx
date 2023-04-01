@@ -4,22 +4,34 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import { DashboardProvider } from "./context/Dashboard.context";
+import { LoginProvider } from "./context/Login.context";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 export default function App() {
+  const queryClient = new QueryClient();
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route
-          path="/dashboard"
-          element={
-            <DashboardProvider>
-              <Dashboard />
-            </DashboardProvider>
-          }
-        />
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <LoginProvider>
+                <Login />
+              </LoginProvider>
+            }
+          />
+          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/dashboard"
+            element={
+              <DashboardProvider>
+                <Dashboard />
+              </DashboardProvider>
+            }
+          />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   );
 }

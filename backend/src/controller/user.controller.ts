@@ -13,7 +13,7 @@ export async function createUserHandler(req: Request, res: Response) {
 
     //Signing Jwts
     signAccessToken(res, userInstance.email);
-    signRefreshToken(res, userInstance.email);
+    await signRefreshToken(res, userInstance.email);
 
     res.status(200).json(userInstance);
   } catch (error: any) {
@@ -28,7 +28,7 @@ export async function loginUserHandler(req: Request, res: Response) {
 
     //Signing Jwts
     signAccessToken(res, userInstance.email);
-    const refreshToken = signRefreshToken(res, userInstance.email);
+    await signRefreshToken(res, userInstance.email);
 
     //Creating a new session
     // await createSession(req,req.body.email,refreshToken)
@@ -36,7 +36,7 @@ export async function loginUserHandler(req: Request, res: Response) {
     res.status(200).json(userInstance);
   } catch (error: any) {
     logger.error(error);
-    res.status(400).json({ name: error.name, message: error.message });
+    res.status(400).json({ name: error.name,type: error.type ,message: error.message });
   }
 }
 

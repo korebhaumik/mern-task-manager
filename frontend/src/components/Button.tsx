@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
+import { LoadingSvg } from "../assets/svg";
 type Props = {
   label: string;
   handleFunction(): void;
+  isLoading: boolean;
 };
 
-export default function Button({ label, handleFunction }: Props) {
+export default function Button({ label, handleFunction, isLoading }: Props) {
   return (
     <motion.button
-      className="w-full py-3 my-2 rounded bg-slate-900 text-slate-100"
+      className="my-2 rounded bg-slate-900 text-slate-100 w-full"
       whileTap={{
         y: 0,
         scale: 0.95,
@@ -22,7 +24,7 @@ export default function Button({ label, handleFunction }: Props) {
       }}
       onClick={handleFunction}
     >
-      {label}
+      {isLoading ? <LoadingSvg /> : <span className="block my-3">{label}</span>}
     </motion.button>
   );
 }

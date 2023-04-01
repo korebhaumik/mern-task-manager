@@ -4,7 +4,7 @@ export default pino({
   transport: {
     target: "pino-pretty",
     options: {
-      ignore: "pid,hostname",
+      ignore: "hostname",
       customColors: "error:red,warn:yellow,info:blue",
       // translateTime: false,
     },

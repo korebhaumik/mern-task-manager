@@ -1,26 +1,25 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { TempType, ErrorBoolType } from "../pages/SignUp";
+import { LoginTempType } from "../context/Login.context";
 import { ErrorSVG } from "../assets/svg";
 
 type Props = {
   label: string;
   placeholder: string;
-  props: {
-    temp: TempType;
-    setTemp: React.Dispatch<React.SetStateAction<TempType>>;
-    errorBool: ErrorBoolType;
-    setErrorBool: React.Dispatch<React.SetStateAction<ErrorBoolType>>;
-  };
+  body: { value: string; isError: boolean; message: string };
+  setValue: React.Dispatch<React.SetStateAction<LoginTempType>>;
 };
 
-export default function Input({ label, placeholder, props }: Props) {
-  const { temp, setTemp, errorBool, setErrorBool } = props;
+export default function Input({ label, placeholder, body, setValue }: Props) {
+  // const { temp, setTemp, errorBool, setErrorBool } = props;
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTemp((prev) => ({ ...prev, [label]: e.target.value }));
+    setValue((prev) => ({
+      ...prev,
+      [label]: { ...prev[label], value: e.target.value },
+    }));
   };
   return (
     <div className="relative mb-3 ">
-      <h2 className="mb-1">{label}</h2>
+      <h2 className="mb-1">{label.charAt(0).toUpperCase() + label.slice(1)}</h2>
       <motion.input
         className="w-full px-4 py-2 border-2 rounded outline-none border-slate-300"
         whileFocus={{
@@ -30,21 +29,21 @@ export default function Input({ label, placeholder, props }: Props) {
           },
         }}
         animate={{
-          border: `2px solid ${errorBool[label] ? "#ce4c45" : "#cbd5e1"}`,
+          border: `2px solid ${body.isError ? "#ce4c45" : "#cbd5e1"}`,
           transition: {
             // duration: 0.35,
           },
         }}
         onChange={handleChange}
-        onFocus={() => {
-          setErrorBool((prev) => ({ ...prev, [label]: false }));
-        }}
+        // onFocus={() => {
+        //   setErrorBool((prev) => ({ ...prev, [label]: false }));
+        // }}
         placeholder={placeholder}
-        type={label === "Password" ? "password" : "text"}
-        value={temp[label]}
+        type={label === "password" ? "password" : "text"}
+        value={body.value}
       />
       <AnimatePresence mode="wait">
-        {errorBool[label] && (
+        {body.isError && (
           <>
             <motion.p
               initial={{
@@ -70,7 +69,7 @@ export default function Input({ label, placeholder, props }: Props) {
                 // transition: {},
               }}
             >
-              The {label} cannot be empty !!
+              {body.message}
             </motion.p>
             <ErrorSVG />
           </>

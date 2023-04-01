@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import config from "config";
 import { signAccessToken, signRefreshToken } from "../utils/signToken";
 import logger from "../utils/logger";
-
+import { client } from "../utils/connect";
 
 ///Schema
 export const validateRequest =
@@ -21,9 +21,7 @@ export const validateRequest =
       res.status(400).json(error);
     }
   };
-
-
-///Cookie  
+ 
 //Types
 type CookieType = {
   accessToken: string;
@@ -46,25 +44,26 @@ export function validateCookie(
   try {
     const { accessToken, refreshToken }: CookieType = req.cookies;
     //Verify Access Token
-    jwt.verify( accessToken, PRIVATE_KEY, (error: jwt.VerifyErrors | null, decoded) => {
-        if (!error) {
+    jwt.verify( accessToken, PRIVATE_KEY, async(error: jwt.VerifyErrors | null, decoded) => {
+      if (!error) {
           const { id } = decoded as TokenPayloadType;
           //@ts-ignore
           req.userEmail = id;
           return next();
 
         } else if (error?.name === "TokenExpiredError") {
-          //Verify Refresh Token
-          const { id } = jwt.verify( refreshToken, PRIVATE_REFRESH_KEY ) as TokenPayloadType;
-
-          //Sign new cookies
-          signAccessToken(res, id);
-          signRefreshToken(res, id);
-
-          logger.info("Tokens upadated");
-          //@ts-ignore
-          req.userEmail = id;
-          return next();
+          const {id} = jwt.decode(accessToken) as TokenPayloadType;
+          const realRefreshToken = await client.get(id);
+          if(realRefreshToken === refreshToken){
+            //Sign new cookies
+            signAccessToken(res, id);
+            await signRefreshToken(res, id);
+            logger.info("Tokens upadated");
+            //@ts-ignore
+            req.userEmail = id;
+            return next();
+          }
+          throw {type: "token", message:"Refresh Token Expired aur invalid!!"};
         } else {
           throw error;
         }

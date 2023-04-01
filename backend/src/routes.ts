@@ -1,4 +1,5 @@
 import { Express, Request, Response } from "express";
+import { client } from "./utils/connect";
 import {
   addNoteHandler,
   removeNoteHandler,
@@ -18,6 +19,20 @@ export default function routes(app: Express) {
   app.get("/healthCheck", [
     (req: Request, res: Response) => {
       return res.status(200).send("Hello World");
+    },
+  ]);
+
+  //Redis_test route
+  app.post("/test", [
+    async (req: Request, res: Response) => {
+      const email = req.body.email;
+      const password = req.body.password;
+      const output = await client.set(email, password);
+      const value = await client.get("korebhaumik@gmail.com");
+      console.log(value);
+      return res
+        .status(200)
+        .json({ message: "Data Cached successfully!", data: output });
     },
   ]);
 
