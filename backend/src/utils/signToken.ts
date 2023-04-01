@@ -26,17 +26,3 @@ export async function signRefreshToken(res: Response, email: string): Promise<vo
       // secure: true,
     });
 }
-
-// //signRefreshToken fnc
-// export function signRefreshToken(res: Response, id: string): string {
-//   const PRIVATE_REFRESH_KEY = config.get<string>("PRIVATE_REFRESH_KEY");
-//   const token = jwt.sign({ id }, PRIVATE_REFRESH_KEY, { expiresIn: "1y",});
-//   res.cookie("refreshToken", token, {
-//     httpOnly: true,
-//     maxAge: 172800000, // 2days
-//     // secure: true,
-//   });
-//   return token;
-// }
-
-// expiresIn: "1y"

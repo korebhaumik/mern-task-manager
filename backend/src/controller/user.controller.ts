@@ -4,8 +4,6 @@ import createUser from "../service/createUser";
 import authenticateUser from "../service/authUser";
 import { signAccessToken, signRefreshToken } from "../utils/signToken";
 import getUserData from "../service/getUserData";
-import { createSession } from "../service/createSession";
-import { deleteSession } from "../service/deleteSession";
 
 export async function createUserHandler(req: Request, res: Response) {
   try {
@@ -29,9 +27,6 @@ export async function loginUserHandler(req: Request, res: Response) {
     //Signing Jwts
     signAccessToken(res, userInstance.email);
     await signRefreshToken(res, userInstance.email);
-
-    //Creating a new session
-    // await createSession(req,req.body.email,refreshToken)
 
     res.status(200).json(userInstance);
   } catch (error: any) {
@@ -58,10 +53,6 @@ export async function logoutUserHandler(req: Request, res: Response) {
     //Clearing Cookies
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
-
-    //Deleting Session
-    //@ts-ignore
-    // await deleteSession(req.userEmail);
 
     res.sendStatus(200);
   } catch (error: any) {

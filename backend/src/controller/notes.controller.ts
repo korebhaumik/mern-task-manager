@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import User, { Note, noteType } from "../models/user.model";
+import { Request, Response } from "express";
+import User, { noteType } from "../models/user.model";
 
 export async function addNoteHandler(req: Request, res: Response) {
   try {

@@ -22,20 +22,6 @@ export default function routes(app: Express) {
     },
   ]);
 
-  //Redis_test route
-  app.post("/test", [
-    async (req: Request, res: Response) => {
-      const email = req.body.email;
-      const password = req.body.password;
-      const output = await client.set(email, password);
-      const value = await client.get("korebhaumik@gmail.com");
-      console.log(value);
-      return res
-        .status(200)
-        .json({ message: "Data Cached successfully!", data: output });
-    },
-  ]);
-
   //Create a new user
   app.post("/createUser", [
     validateRequest(CreateUserZodSchema),
